@@ -1,0 +1,7 @@
+target/
+dbt_packages/
+logs/
+
+# Local data (not versioned)
+taxi_rides_ny/data/
+*.duckdb
