@@ -10,6 +10,7 @@ select
    cast(lpep_dropoff_datetime as timestamp) dropoff_datetime,
    
    --trip info
+   store_and_fwd_flag,
    cast(passenger_count as int) as passenger_count,
    cast(trip_distance as float) as trip_distance,
    cast(trip_type as int) as trip_type,
@@ -20,9 +21,10 @@ select
    cast(mta_tax as numeric) as mta_tax,
    cast(tip_amount as numeric) as tip_amount,
    cast(tolls_amount as numeric) as tolls_amount,
+   cast(ehail_fee as numeric) as ehail_fee,
    cast(improvement_surcharge as numeric) as improvement_surcharge,
    cast(total_amount as numeric) as total_amount,
    cast(payment_type as int) as payment_type
 
 from {{source('raw_data', 'green_tripdata')}}
-where vendor_id is not null;
+where vendor_id is not null
