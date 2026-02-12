@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: fct_trips
+    description: "One row per taxi trip (yellow+green union)"
+    columns:
+      - name: trip_id
+        description: "Surrogate primary key for trips"
+        tests:
+          - not_null
+          - unique
+
+      - name: pickup_datetime
+        tests:
+          - not_null
+
+      - name: dropoff_datetime
+        tests:
+          - not_null
+
+      - name: total_amount
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "total_amount >= 0"
+
+      - name: fare_amount
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "fare_amount >= 0"
+
+      - name: payment_type
+        tests:
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              value_set: [1, 2, 3, 4, 5]
+
+      - name: payment_type_description
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_in_set:
+              value_set:
+                - 'Credit card'
+                - 'Cash'
+                - 'No charge'
+                - 'Dispute'
+                - 'Unknown'
+
+      - name: trip_distance
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 200
