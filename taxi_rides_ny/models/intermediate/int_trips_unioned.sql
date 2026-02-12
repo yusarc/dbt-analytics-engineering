@@ -11,4 +11,5 @@ trips_unioned as (
     union all
     select * from yellow_tripdata
 )
+
 select * from trips_unioned
