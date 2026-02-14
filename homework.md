@@ -20,5 +20,28 @@
 
 <img width="105" height="32" alt="image" src="https://github.com/user-attachments/assets/47554661-4fba-4071-9956-44b2d7480ecf" />
 
+## Question 4. Q4: Zone with highest revenue for Green taxis in 2020? (1 point)
+
+## Answer 4.
+
+<img width="165" height="31" alt="image" src="https://github.com/user-attachments/assets/60fe8ffa-9b23-49f6-8d83-ea9313df3323" />
+
+## Question 5. Q5: Total trips for Green taxis in October 2019? (1 point)
+
+
+## Answer 5. 
+
+<img width="106" height="23" alt="image" src="https://github.com/user-attachments/assets/8a84ce2c-06f7-4587-9b42-7a38a552e195" />
+
+
+## Question 6. Q6: Count of records in stg_fhv_tripdata (filter dispatching_base_num IS NULL)? (1 point)
+
+## Answer 6.
+
+<img width="102" height="27" alt="image" src="https://github.com/user-attachments/assets/562ed804-03ee-498e-9cf6-4ab0d59e1e19" />
+
+
+
+
 
 
