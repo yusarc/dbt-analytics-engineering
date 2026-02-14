@@ -7,8 +7,6 @@ This repo is my analytics engineering playground based on the **NYC taxi trip da
 - Staging models for raw yellow & green trips  
 - A fact model `fct_trips` with tests and basic data quality rules  
 
----
-
 ## Project structure
 
 ```
@@ -26,7 +24,7 @@ dbt-analytics-engineering/
     seeds/
     macros/
     dbt_project.yml
-
+```
 
 staging/: light cleaning and renaming of raw tables into a consistent schema.
 
@@ -53,13 +51,14 @@ packages:
 
   - package: dbt-labs/codegen
     version: ">=0.11.0"
+    
 dbt_utils – generic tests & macros (surrogate keys, expression tests, etc.).
 
 dbt_expectations – Great Expectations‑style data quality tests.
 
 codegen – helpers to generate model and source YAML files.
 
-Models
+## Models
 Staging models
 The models/staging layer:
 
@@ -92,6 +91,7 @@ fct_trips is built from an intermediate union model (int_trips_unioned) that sta
 Surrogate primary key trip_id
 trip_id is a deterministic hash of a subset of business keys, implemented without external macros (so it works even without dbt_utils):
 
+```
 md5(
   concat(
     cast(vendor_id as string), ':',
@@ -101,10 +101,12 @@ md5(
     cast(dropoff_location_id as string)
   )
 ) as trip_id
-This creates a stable, reproducible primary key for each trip.
+-- This creates a stable, reproducible primary key for each trip.
+```
 
-Deduplication logic
-Full‑row duplicates (same vendor, locations, timestamps, amounts, etc.) are removed with a row_number() window:
+```
+--Deduplication logic
+--Full‑row duplicates (same vendor, locations, timestamps, amounts, etc.) are removed with a row_number() window:
 
 row_number() over (
   partition by
@@ -129,10 +131,12 @@ row_number() over (
     payment_type
   order by pickup_datetime
 ) as rn
-and then keeping where rn = 1. This ensures one row per logical trip, even if the source data contains exact duplicates.
+--and then keeping where rn = 1. This ensures one row per logical trip, even if the source data contains exact duplicates.
+```
 
-Payment type enrichment
-The numeric payment_type codes (1–5) are mapped to human‑readable descriptions using the official NYC TLC data dictionary:
+```
+--Payment type enrichment
+--The numeric payment_type codes (1–5) are mapped to human‑readable descriptions using the official NYC TLC data dictionary:
 
 case cast(payment_type as int)
   when 1 then 'Credit card'
@@ -142,9 +146,12 @@ case cast(payment_type as int)
   when 5 then 'Unknown'
   else 'Other'
 end as payment_type_description
-This makes downstream analysis and BI more readable without losing the original numeric code.
 
- # Data quality tests
+--This makes downstream analysis and BI more readable without losing the original numeric code.
+
+```
+ ## Data quality tests
+ 
 Data tests are defined in models/marts/core/schema.yml using:
 
 dbt core built‑in tests (not_null, unique)
@@ -155,6 +162,7 @@ dbt_expectations tests
 
 Example schema extract:
 
+```
 version: 2
 
 models:
@@ -207,6 +215,8 @@ models:
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
               max_value: 200
+```
+
 These tests cover:
 
 Schema / PK integrity
@@ -230,6 +240,7 @@ Sanity check on distances
 trip_distance must be between 0 and 200 to catch obviously broken records / outliers.
 
 How to run (local DuckDB)
+
 From inside the taxi_rides_ny directory:
 
 Check dbt + DuckDB connectivity:
@@ -251,6 +262,7 @@ dbt test -s fct_trips
 The DuckDB profile is defined in ~/.dbt/profiles.yml and points to a local DuckDB file and a dev schema where models like dev.fct_trips are created.
 
 Next steps / ideas
+
 Planned improvements for this project:
 
 Add dimension models (e.g. dim_zones based on the NYC taxi zone lookup table) and join them into fct_trips.
